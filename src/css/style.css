@@ -1,0 +1,331 @@
+/* CSS Variables & Global Reset */
+:root {
+    --primary-color: #ff6b81;
+    --primary-hover: #ff4757;
+    --secondary-color: #70a1ff;
+    --accent-color: #d63031;
+    --bg-color: #ffeaa7; /* Background màu kem ấm áp */
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.65);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+    --text-color: #2d3436;
+    --text-muted: #636e72;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Reset margin, padding */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: var(--font-family);
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Canvas fullscreen */
+#webgl-canvas {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    z-index: 1;
+    touch-action: none;
+}
+
+/* Lớp phủ UI Overlay với pointer-events: none */
+#ui-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.glass-card, .glass-btn, .start-btn {
+    pointer-events: auto;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 16px;
+    padding: 16px 24px;
+}
+
+.app-header {
+    text-align: center;
+    pointer-events: none;
+}
+
+.app-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    color: #d63031;
+}
+
+.app-header .subtitle {
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: block;
+    color: var(--text-muted);
+}
+
+/* Stats Panel */
+.stats-panel {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 270px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.stat-label {
+    font-weight: 600;
+}
+
+.stat-val {
+    font-weight: 700;
+    color: #d63031;
+}
+
+.stat-val.highlight {
+    font-size: 1.2rem;
+    color: #00b894;
+}
+
+/* State Badge Styles */
+.state-badge {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.state-badge.sleeping {
+    background: rgba(108, 92, 231, 0.2);
+    color: #6c5ce7;
+    border: 1px solid rgba(108, 92, 231, 0.4);
+    animation: pulseSleep 2s infinite ease-in-out;
+}
+
+.state-badge.awake {
+    background: rgba(0, 184, 148, 0.25);
+    color: #008060;
+    border: 1px solid rgba(0, 184, 148, 0.5);
+}
+
+@keyframes pulseSleep {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1.0; transform: scale(1.02); }
+}
+
+.progress-bar {
+    flex: 1;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff758c 0%, #d63031 100%);
+    width: 0%;
+    transition: width 0.2s ease-out;
+    border-radius: 6px;
+}
+
+.audio-badge {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.08);
+    font-weight: 600;
+}
+
+.audio-badge.active {
+    background: rgba(0, 184, 148, 0.2);
+    color: #008060;
+    border: 1px solid rgba(0, 184, 148, 0.4);
+}
+
+.bottom-controls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.glass-btn {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.glass-btn:hover {
+    background: rgba(255, 255, 255, 0.75);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+.glass-btn:active {
+    transform: translateY(0);
+}
+
+.hint-box {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 480px;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    animation: bounceHint 3s infinite ease-in-out;
+}
+
+@keyframes bounceHint {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, -6px); }
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 234, 167, 0.88);
+    backdrop-filter: blur(15px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.overlay-card {
+    text-align: center;
+    max-width: 420px;
+    padding: 40px 30px;
+}
+
+.cat-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    animation: wiggle 2s infinite ease-in-out;
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+.overlay-card h2 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #2d3436;
+}
+
+.overlay-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 25px;
+}
+
+.start-btn {
+    background: linear-gradient(135deg, #ff6b81 0%, #d63031 100%);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(214, 48, 49, 0.3);
+    transition: all 0.3s ease;
+}
+
+.start-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(214, 48, 49, 0.5);
+}
+
+.start-btn.pulse {
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(255, 107, 129, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 107, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 107, 129, 0); }
+}
+
+@media (max-width: 600px) {
+    .stats-panel {
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        min-width: auto;
+    }
+    .hint-box {
+        font-size: 0.8rem;
+        padding: 10px 15px;
+        width: 90%;
+    }
+    .bottom-controls {
+        bottom: 75px;
+        right: 15px;
+    }
+}
