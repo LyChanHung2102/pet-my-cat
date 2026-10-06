@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nựng Mèo WebGL - Pet My Cat 3D</title>
+    <link rel="stylesheet" href="src/css/style.css">
+    
+    <!-- Three.js Import Map từ CDN unpkg -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <!-- Thẻ canvas WebGL chính -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Lớp phủ UI với pointer-events: none -->
+    <div id="ui-overlay">
+        <header class="app-header">
+            <h1>🐾 Nựng Mèo WebGL <span class="subtitle">Pet My Cat 3D</span></h1>
+        </header>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel glass-card">
+            <div class="stat-item">
+                <span class="stat-label">🐱 Trạng thái:</span>
+                <span id="cat-state-badge" class="state-badge sleeping">💤 Đang ngủ...</span>
+            </div>
+
+            <div class="stat-item">
+                <span class="stat-label">❤️ Mức độ hạnh phúc:</span>
+                <div class="progress-bar">
+                    <div id="happiness-fill" class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <span id="happiness-val" class="stat-val">0%</span>
+            </div>
+
+            <div class="stat-item">
+                <span class="stat-label">✨ Số lần nựng:</span>
+                <span id="pet-count" class="stat-val highlight">0</span>
+            </div>
+
+            <div class="stat-item">
+                <span class="stat-label">🎵 Âm thanh:</span>
+                <span id="audio-status" class="audio-badge">Chờ bật...</span>
+            </div>
+        </div>
+
+        <!-- Controls & Sound Toggle -->
+        <div class="bottom-controls">
+            <button id="toggle-sound-btn" class="glass-btn">
+                🔊 Bật / Tắt âm thanh
+            </button>
+            <button id="change-camera-btn" class="glass-btn">
+                🎥 Đổi góc nhìn
+            </button>
+        </div>
+
+        <!-- Instruction Hint -->
+        <div id="hint-box" class="hint-box glass-card">
+            <p id="hint-text">💡 <strong>Hướng dẫn:</strong> Bé mèo đang ngủ khò khò... Hãy chạm hoặc vuốt nhẹ lên bé để đánh thức và nựng nhé! 💤</p>
+        </div>
+    </div>
+
+    <!-- Overlay Bắt đầu (Unlock Audio Policy) -->
+    <div id="start-overlay" class="overlay">
+        <div class="overlay-card glass-card">
+            <div class="cat-icon">😴</div>
+            <h2>Bé mèo đang nằm ngủ khò khò...</h2>
+            <p>Nhấn nút bên dưới để bật không gian 3D tương tác và đánh thức bé mèo nhé!</p>
+            <button id="start-btn" class="start-btn pulse">
+                ▶ Bắt Đầu Nựng Mèo
+            </button>
+        </div>
+    </div>
+
+    <!-- Script chính -->
+    <script type="module" src="src/js/main.js"></script>
+</body>
+</html>
