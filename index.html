@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nựng Mèo WebGL - Pet My Cat 3D</title>
-    <link rel="stylesheet" href="src/css/style.css">
-    
-    <!-- Three.js Import Map từ CDN unpkg -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Pet Your Cat 🐾</title>
+    <link rel="stylesheet" href="css/style.css">
     <script type="importmap">
     {
         "imports": {
@@ -17,70 +15,90 @@
     </script>
 </head>
 <body>
-    <!-- Thẻ canvas WebGL chính -->
-    <canvas id="webgl-canvas"></canvas>
 
-    <!-- Lớp phủ UI với pointer-events: none -->
-    <div id="ui-overlay">
-        <header class="app-header">
-            <h1>🐾 Nựng Mèo WebGL <span class="subtitle">Pet My Cat 3D</span></h1>
-        </header>
+    <canvas id="game-canvas" aria-label="Pet Your Cat 3D world"></canvas>
 
-        <!-- Stats Panel -->
-        <div class="stats-panel glass-card">
-            <div class="stat-item">
-                <span class="stat-label">🐱 Trạng thái:</span>
-                <span id="cat-state-badge" class="state-badge sleeping">💤 Đang ngủ...</span>
+    <!-- HUD -->
+    <div id="hud" aria-live="polite">
+
+        <!-- Top-left: cat info -->
+        <div id="hud-top">
+            <div id="cat-info">
+                <span id="cat-name-display">Milo</span>
+                <span id="cat-state">Relaxing</span>
+                <span id="time-of-day" aria-label="Time of day">☀️</span>
             </div>
 
-            <div class="stat-item">
-                <span class="stat-label">❤️ Mức độ hạnh phúc:</span>
-                <div class="progress-bar">
-                    <div id="happiness-fill" class="progress-fill" style="width: 0%;"></div>
+            <div class="stat-row">
+                <span class="stat-icon" aria-label="Affection">❤️</span>
+                <div class="stat-bar" role="progressbar" aria-label="Affection" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                    <div id="affection-fill" class="stat-fill fill-pink"></div>
                 </div>
-                <span id="happiness-val" class="stat-val">0%</span>
             </div>
 
-            <div class="stat-item">
-                <span class="stat-label">✨ Số lần nựng:</span>
-                <span id="pet-count" class="stat-val highlight">0</span>
+            <div class="stat-row">
+                <span class="stat-icon" aria-label="Hunger">🐟</span>
+                <div class="stat-bar" role="progressbar" aria-label="Hunger" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                    <div id="hunger-fill" class="stat-fill fill-orange"></div>
+                </div>
             </div>
 
-            <div class="stat-item">
-                <span class="stat-label">🎵 Âm thanh:</span>
-                <span id="audio-status" class="audio-badge">Chờ bật...</span>
-            </div>
+            <div id="mood-text">Happy 😸</div>
         </div>
 
-        <!-- Controls & Sound Toggle -->
-        <div class="bottom-controls">
-            <button id="toggle-sound-btn" class="glass-btn">
-                🔊 Bật / Tắt âm thanh
-            </button>
-            <button id="change-camera-btn" class="glass-btn">
-                🎥 Đổi góc nhìn
-            </button>
+        <!-- Bottom: action buttons -->
+        <div id="hud-bottom">
+            <button id="btn-pet"       class="action-btn" aria-label="Pet the cat">🤚 Pet</button>
+            <button id="btn-play"      class="action-btn" aria-label="Play with the cat">🎾 Play</button>
+            <button id="btn-call"      class="action-btn" aria-label="Call the cat">📣 Call</button>
+            <button id="btn-feed"      class="action-btn" aria-label="Feed the cat">🐟 Feed</button>
+            <button id="btn-customize" class="icon-btn"   aria-label="Customize cat">🎨</button>
+            <button id="btn-mute"      class="icon-btn"   aria-label="Mute">🔊</button>
         </div>
 
-        <!-- Instruction Hint -->
-        <div id="hint-box" class="hint-box glass-card">
-            <p id="hint-text">💡 <strong>Hướng dẫn:</strong> Bé mèo đang ngủ khò khò... Hãy chạm hoặc vuốt nhẹ lên bé để đánh thức và nựng nhé! 💤</p>
+    </div>
+
+    <!-- Customize panel -->
+    <div id="customize-panel" class="panel hidden" role="dialog" aria-label="Customize your cat" aria-modal="false">
+        <div class="panel-header">
+            <span>Customize</span>
+            <button id="customize-close" class="close-btn" aria-label="Close">✕</button>
+        </div>
+        <div class="customize-body"></div>
+    </div>
+
+    <!-- Contextual hint -->
+    <div id="hint" class="hint hidden" aria-hidden="true">
+        Touch the cat to say hello 🐾
+    </div>
+
+    <!-- Start overlay -->
+    <div id="start-overlay" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+        <div class="overlay-card">
+            <div class="paw-icon" aria-hidden="true">🐾</div>
+            <h1 id="welcome-title">Pet Your Cat</h1>
+            <p>Meet your new friend.<br>What should we call them?</p>
+            <input
+                id="cat-name-input"
+                type="text"
+                maxlength="20"
+                placeholder="Milo"
+                aria-label="Cat name"
+                autocomplete="off"
+            >
+            <button id="start-btn" class="start-btn">Say Hello 🐱</button>
         </div>
     </div>
 
-    <!-- Overlay Bắt đầu (Unlock Audio Policy) -->
-    <div id="start-overlay" class="overlay">
-        <div class="overlay-card glass-card">
-            <div class="cat-icon">😴</div>
-            <h2>Bé mèo đang nằm ngủ khò khò...</h2>
-            <p>Nhấn nút bên dưới để bật không gian 3D tương tác và đánh thức bé mèo nhé!</p>
-            <button id="start-btn" class="start-btn pulse">
-                ▶ Bắt Đầu Nựng Mèo
-            </button>
+    <!-- No WebGL fallback -->
+    <div id="no-webgl" class="hidden" role="alert">
+        <div class="overlay-card">
+            <div class="paw-icon" aria-hidden="true">🐾</div>
+            <h2>3D not available</h2>
+            <p>Your browser doesn't support WebGL.<br>Please try a modern browser like Chrome or Firefox.</p>
         </div>
     </div>
 
-    <!-- Script chính -->
-    <script type="module" src="src/js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
